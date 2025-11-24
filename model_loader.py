@@ -43,7 +43,7 @@ def build_main_model():
 
 def build_clip_model(vocab_size):
     print('\033[32minfo loading CLIP-model (radical model or pre-train model)...\033[0m')
-    clip_model = CLIP(embeddim=2048, context_length=30, vocab_size=vocab_size, transformer_width=512, transformer_heads=8, transformer_layers=12).cuda()
+    clip_model = CLIP(embed_dim=2048, context_length=30, vocab_size=vocab_size, transformer_width=512, transformer_heads=8, transformer_layers=12).cuda()
     clip_model = nn.DataParallel(clip_model)
     
     if config['pre-train_model'].strip():
