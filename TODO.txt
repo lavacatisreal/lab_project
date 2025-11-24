@@ -1,0 +1,35 @@
+pre-train model 來 finetune
+-------------------------------------------
+然後可能要麻煩你們先去處理data裡面的IDS的部分
+基本上4808個字的讀音應該都要有
+ 'alpha_path' : './data/char_handwriting_Chinese.txt',
+    'radical_path': './data/radical_all_Chinese.txt',
+
+理論上應該是改這兩個
+decompose_path': './data/decompose.txt'
+還有這個
+基本上 
+char_handwriting_Chinese.txt 應該是有包含我們的4808個字還有所有注音符號跟音調就好
+radical_all_Chinese.txt 只要加上注音符號跟音調
+decompose.txt 的話就是要加上排列組合注音了
+
+有音調的都是先左右再分上下（除輕聲外）
+注音排列組合你們可以寫個code去全部生出來 然後再用我傳的這個產生他們的ids
+分兩個 model
+你們那些就全放注音
+這樣你們的 
+./data/char_handwriting_Chinese.txt
+./data/radical_all_Chinese.txt
+./data/decompose.txt
+只要塞注音就好了
+或者只train pre-train model 後直接拿來用 反正這準確率也不是很重要
+先往
+./CCR-CLIP/data
+裡面的東西改
+窮舉注音組合
+------------------------------
+用哪一個 clip model
+Adult_pre_train
+那看來是模型泛化
+注音圖片的資料集
+用印刷體生成
