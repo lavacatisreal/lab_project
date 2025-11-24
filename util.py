@@ -96,23 +96,40 @@ for index, char in enumerate(alphabet_radical):
     r2num[char] = index
 
 # 做 IDS 的 map
+# dict_file = open(config['decompose_path'], 'r').readlines()
+# char_radical_dict = {}
+# for line in dict_file:
+#     line = line.strip('\n')
+#     char, r_s = line.split(':')
+#     char_radical_dict[char] = r_s.split(' ') 
 dict_file = open(config['decompose_path'], 'r').readlines()
 char_radical_dict = {}
 for line in dict_file:
-    line = line.strip('\n')
+    line = line.strip()  # 用 strip() 去除空白與換行
+    if not line:
+        continue  # 空行跳過
     char, r_s = line.split(':')
-    char_radical_dict[char] = r_s.split(' ') 
+    char_radical_dict[char] = r_s.split(' ')
+
 
 # 把對應部首轉換成數字 (用 r2num 的 key-value)
 def convert_char(label):
     # r_label = 沒有答案的 IDS (每個 element 的 tail 有 $, 每個 element 都是一個字的 decompose)
+    # r_label = []
+    # batch = len(label)
+    # for i in range(batch):
+    #     r_tmp = copy.deepcopy(char_radical_dict[label[i]])
+    #     r_tmp.append('$')
+    #     r_label.append(r_tmp)
     r_label = []
     batch = len(label)
     for i in range(batch):
-        r_tmp = copy.deepcopy(char_radical_dict[label[i]])
+        if label[i] not in char_radical_dict:
+            r_tmp = []  # 或其他預設值
+        else:
+            r_tmp = copy.deepcopy(char_radical_dict[label[i]])
         r_tmp.append('$')
         r_label.append(r_tmp)
-    
     # 把每個部首（或 $）轉成對應的數字 (map) 存進 text_tensor
     # 數字是 0 的代表留白 (用不到 30 個 tensor element)
     text_tensor = torch.zeros(batch, 30).long().cuda() # 二維 list, text_tensor[batch][30]

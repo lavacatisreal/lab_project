@@ -6,6 +6,7 @@ from util import get_data_package, get_alphabet, get_radical_alphabet, saver, mu
 from model_loader import build_main_model, build_clip_model, build_optimizer_scheduler
 from feature_extractor import extract_text_features
 from train import Trainer
+import os
 
 def main():
 
@@ -48,9 +49,13 @@ def main():
         print(f"\033[33m[info] ------------------------- Mode: train and validation! -------------------------\033[0m")
         
         # train and validation
+        # ----------
+        save_dir = os.path.join('/content/lab_project/history', config['exp_name'])
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir, exist_ok=True)
         for epoch in range(1, config['epoch']+1):
             # 備份
-            torch.save(model.state_dict(), './history/{}/model.pth'.format(config['exp_name']))
+            torch.save(model.state_dict(), os.path.join(save_dir, 'model.pth'))
             
             for iteration, data in enumerate(train_loader):
                 image, label, index = data
