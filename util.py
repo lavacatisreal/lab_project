@@ -182,23 +182,25 @@ def must_in_screen():
 
 # 建立實驗紀錄資料夾，並複製當前程式碼檔案
 def saver():
+    history_root = '/content/lab_project/history'  # 根目錄改為絕對路徑
+    exp_folder = os.path.join(history_root, config['exp_name'])
     try:
-        shutil.rmtree('./history/{}'.format(config['exp_name']))
+        shutil.rmtree(exp_folder)
     except:
         pass
-    os.mkdir('./history/{}'.format(config['exp_name']))
+    os.makedirs(exp_folder, exist_ok=True)  # 確保目錄存在，並解決父目錄不存在問題
 
     import time
 
     print('\033[33m**** Experiment Name: {} ****\033[0m'.format(config['exp_name']))
 
     localtime = time.asctime(time.localtime(time.time()))
-    f = open(os.path.join('./history', config['exp_name'], str(localtime)),'w+')
-    f.close()
+    record_file_path = os.path.join(exp_folder, str(localtime))
+    with open(record_file_path,'w+') as f:
+        pass
 
-    src_folder = './'
-    exp_name = config['exp_name']
-    dst_folder = os.path.join('./history', exp_name)
+    src_folder = '/content/lab_project'  # 原始程式碼所在資料夾
+    dst_folder = exp_folder
 
     file_list = [f for f in os.listdir(src_folder) if os.path.isfile(os.path.join(src_folder, f))]
     for file_name in file_list:
