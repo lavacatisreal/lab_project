@@ -7,7 +7,7 @@ config = {
     'test' : False,
     'resume_model' : '/content/drive/MyDrive/improve_FudanOCR/final_model/final_model.pth',
     'train_dataset' : '/content/drive/MyDrive/improve_FudanOCR/lmdb/train',
-    'validation_dataset': '/content/drive/MyDrive/improve_FudanOCR/lmdb/train',
+    'validation_dataset': '/content/drive/MyDrive/improve_FudanOCR/lmdb/val',
     'inference_dataset': 'judge_data',
     'judge_dataset': '',
     'schedule_frequency' : 10,
