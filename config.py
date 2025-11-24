@@ -5,9 +5,9 @@ config = {
     'batch' : 128,
     'val_frequency' : 100,
     'test' : False,
-    'resume_model' : './final_model/final_model.pth',
-    'train_dataset' : '/mnt/storage/kellen/lmdb/kid_data_ver_5/train_lmdb',
-    'validation_dataset': '/mnt/storage/kellen/lmdb/kid_data_ver_5/val_lmdb',
+    'resume_model' : '/content/drive/MyDrive/improve_FudanOCR/final_model/final_model.pth',
+    'train_dataset' : '/content/drive/MyDrive/improve_FudanOCR/lmdb/train',
+    'validation_dataset': '/content/drive/MyDrive/improve_FudanOCR/lmdb/train',
     'inference_dataset': 'judge_data',
     'judge_dataset': '',
     'schedule_frequency' : 10,
@@ -15,11 +15,12 @@ config = {
     'imageW' : 256,
     'encoder' : 'resnet',
     'decoder' : 'transformer',
-    'alpha_path' : './data/char_handwriting_Chinese.txt',
-    'radical_path': './data/radical_all_Chinese_2.txt',
-    'decompose_path': './data/decompose.txt',
-    'pre-train_model': '/mnt/storage/kellen/pre_train_model/adult_pre_train_model.pth',
+    'alpha_path' : '/content/lab_project/data/decompose_v1.txt', #常見字?
+    'radical_path': '/content/lab_project/data/decompose_v1.txt', #常見部首?
+    'decompose_path': '/content/lab_project/data/bpmf_ids_v2.txt',   #文字檔ids?
+    'pre-train_model': '/content/drive/MyDrive/improve_FudanOCR/pre_train_model/adult_pre_train_model.pth',
     'stn': False,
     'constrain': False,
     'char_len' : 60,
 }
+
