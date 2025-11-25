@@ -70,22 +70,32 @@ def convert(label):
     return text_tensor
 
 def saver():
+    # 根目錄改成絕對路徑
+    history_root = '/content/lab_project/CCR-CLIP/history'
+    exp_folder = os.path.join(history_root, config['exp_name'])
+
+    # 刪除舊實驗資料夾（若存在）
     try:
-        shutil.rmtree('./history/{}'.format(config['exp_name']))
-    except:
+        shutil.rmtree(exp_folder)
+    except FileNotFoundError:
         pass
-    os.mkdir('./history/{}'.format(config['exp_name']))
+
+    # 確保 history 和實驗目錄都存在
+    os.makedirs(exp_folder, exist_ok=True)
+
     print('**** Experiment Name: {} ****'.format(config['exp_name']))
 
     localtime = time.asctime(time.localtime(time.time()))
-    f = open(os.path.join('./history', config['exp_name'], str(localtime)),'w+')
-    f.close()
+    record_file_path = os.path.join(exp_folder, str(localtime))
+    with open(record_file_path, 'w+') as f:
+        pass
 
-    src_folder = './'
-    exp_name = config['exp_name']
-    dst_folder = os.path.join('./history', exp_name)
+    # 原始程式碼所在資料夾（CCR-CLIP）
+    src_folder = '/content/lab_project/CCR-CLIP'
+    dst_folder = exp_folder
 
-    file_list = [f for f in os.listdir(src_folder) if os.path.isfile(os.path.join(src_folder, f))]
+    file_list = [f for f in os.listdir(src_folder)
+                if os.path.isfile(os.path.join(src_folder, f))]
     for file_name in file_list:
         src = os.path.join(src_folder, file_name)
         dst = os.path.join(dst_folder, file_name)
