@@ -4,6 +4,7 @@ import time
 import shutil
 import os
 
+
 from config import config
 from dataset import lmdbDataset, resizeNormalize
 from shutil import copyfile
@@ -30,6 +31,10 @@ for line in dict_file:
         char_radical_dict[char] = r_s.split(' ')
     else:
         char_radical_dict[char] = list(''.join(r_s.split(' ')))
+
+# debug
+for k, v in list(char_radical_dict.items())[:10]:  # 印前10筆
+    print(f"字元: {k}, 拆解: {v}")
 
 def get_data_package():
     train_dataset = []
