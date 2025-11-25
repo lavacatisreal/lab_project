@@ -9,6 +9,44 @@ import copy
 from data.datasetReader import lmdbDataset, resizeNormalize, InferenceDataset
 from config import config
 from shutil import copyfile
+import re
+
+tone_map = {
+    '0': '˙',  # 輕聲
+    '2': 'ˊ',
+    '3': 'ˇ',
+    '4': 'ˋ',
+}
+
+def convert_label_list(label_list):
+    def convert_single(label):
+        # 處理形如 '_0ㄌㄚ' => '˙ㄌㄚ'
+        def repl_prefix(match):
+            tone_num = match.group(1)
+            base = match.group(2)
+            tone_char = tone_map.get(tone_num, '')
+            return tone_char + base
+
+        label = re.sub(r'_(\d)([ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ]+)', repl_prefix, label)
+
+        # 處理形如 'ㄆㄤ_2' => 'ㄆㄤˊ'
+        def repl_suffix(match):
+            base = match.group(1)
+            tone_num = match.group(2)
+            tone_char = tone_map.get(tone_num, '')
+            return base + tone_char
+
+        label = re.sub(r'([ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ]+)_(\d)', repl_suffix, label)
+
+        return label
+
+    return [convert_single(label) for label in label_list]
+
+
+# 測試
+labels = ['_0ㄌㄚ', 'ㄆㄤ_2']
+converted = convert_label_list(labels)
+print(converted)  # 輸出: ['˙ㄌㄚ', 'ㄆㄤˊ']
 
 mse_loss = nn.MSELoss()
 alphabet_character_file = open(config['alpha_path'])                # 開啟字典檔
@@ -115,6 +153,7 @@ for line in dict_file:
 # 把對應部首轉換成數字 (用 r2num 的 key-value)
 def convert_char(label):
     # r_label = 沒有答案的 IDS (每個 element 的 tail 有 $, 每個 element 都是一個字的 decompose)
+    label=convert_label_list(label)
     r_label = []
     batch = len(label)
     for i in range(batch):
@@ -145,7 +184,7 @@ def get_radical_alphabet():
     return alphabet_radical
 
 def converter(label):
-
+    label=convert_label_list(label)
     string_label = label
     label = [i for i in label]
     alp2num = alp2num_character
