@@ -1,7 +1,7 @@
 config = {
     'epoch': 40,
-    'train_dataset': '/content/drive/MyDrive/improve_FudanOCR/data/lmdb/adult_data/train',
-    'test_dataset': '/content/drive/MyDrive/improve_FudanOCR/data/lmdb/adult_data/val',
+    'train_dataset': '/content/drive/MyDrive/improve_FudanOCR/lmdb/adult_data/train',
+    'test_dataset': '/content/drive/MyDrive/improve_FudanOCR/lmdb/adult_data/val',
     'batch': 128,
     'imageW': 128,
     'imageH': 128,
