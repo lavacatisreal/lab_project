@@ -3,7 +3,27 @@ import torch
 import time
 import shutil
 import os
+import re
 
+# 注音聲調數字對應符號字典
+tone_map = {
+    '2': 'ˊ',
+    '3': 'ˇ',
+    '4': 'ˋ',
+    '0': '˙'  # 輕聲
+}
+
+def convert_phonetic_label(label):
+    def repl(match):
+        tone_num = match.group(1)
+        base = match.group(2)
+        tone_char = tone_map.get(tone_num, '')
+        return tone_char + base
+    # 處理 '_0ㄌㄧ' => '˙ㄌㄧ' 這類模式
+    new_label = re.sub(r'_(\d)([ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ]+)', repl, label)
+    # 處理 'ㄜ_2' => 'ㄜˊ' 的原本舊模式（可保留）
+    new_label = re.sub(r'([ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ])_(\d)', lambda m: m.group(1) + tone_map.get(m.group(2), ''), new_label)
+    return new_label
 
 from config import config
 from dataset import lmdbDataset, resizeNormalize
@@ -32,9 +52,8 @@ for line in dict_file:
     else:
         char_radical_dict[char] = list(''.join(r_s.split(' ')))
 
-# debug
-for k, v in list(char_radical_dict.items())[:10]:  # 印前10筆
-    print(f"字元: {k}, 拆解: {v}")
+# for k, v in list(char_radical_dict.items())[:10]:  # 印前10筆
+#     print(f"字元: {k}, 拆解: {v}")
 
 def get_data_package():
     train_dataset = []
@@ -60,10 +79,13 @@ def get_data_package():
 
 import copy
 def convert(label):
+    # converted_labels = [convert_phonetic_label(l) for l in label]
+    print(label)
     r_label = []
     batch = len(label)
     for i in range(batch):
-        r_tmp = copy.deepcopy(char_radical_dict[label[i]])
+        # r_tmp = copy.deepcopy(char_radical_dict[converted_labels[i]])
+        r_tmp = copy.deepcopy(char_radical_dict[converted_labels[i]])
         r_tmp.append('$')
         r_label.append(r_tmp)
 
