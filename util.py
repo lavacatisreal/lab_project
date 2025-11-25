@@ -115,12 +115,6 @@ for line in dict_file:
 # 把對應部首轉換成數字 (用 r2num 的 key-value)
 def convert_char(label):
     # r_label = 沒有答案的 IDS (每個 element 的 tail 有 $, 每個 element 都是一個字的 decompose)
-    # r_label = []
-    # batch = len(label)
-    # for i in range(batch):
-    #     r_tmp = copy.deepcopy(char_radical_dict[label[i]])
-    #     r_tmp.append('$')
-    #     r_label.append(r_tmp)
     r_label = []
     batch = len(label)
     for i in range(batch):
@@ -141,6 +135,9 @@ def convert_char(label):
             if tmp[j] not in r2num:
                 continue
             '''
+            if tmp[j] not in r2num:
+                # print(f"{tmp[j]} not in r2num")
+                continue
             text_tensor[i][j] = r2num[tmp[j]]
     return text_tensor
 
