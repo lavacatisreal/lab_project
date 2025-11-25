@@ -87,15 +87,21 @@ def get_dataloader(root,shuffle=False):
         print(f"\033[32m[info] Detect dataset: {root}\033[0m")
         f = open(root,'rb')
         dataset = pkl.load(f)
+        # dataloader = torch.utils.data.DataLoader(
+        #     dataset, batch_size=config['batch'], shuffle=shuffle, num_workers=16, pin_memory=True, prefetch_factor=4,
+        # )
         dataloader = torch.utils.data.DataLoader(
-            dataset, batch_size=config['batch'], shuffle=shuffle, num_workers=16, pin_memory=True, prefetch_factor=4,
+            dataset, batch_size=config['batch'], shuffle=shuffle, num_workers=2, pin_memory=True, prefetch_factor=4,
         )
     else:
         # for training and validation
         print(f"\033[32m[info] Detect dataset: {root}\033[0m")
         dataset = lmdbDataset(root,resizeNormalize((config['imageW'],config['imageH'])))
+        # dataloader = torch.utils.data.DataLoader(
+        #     dataset, batch_size=config['batch'], shuffle=shuffle, num_workers=16, pin_memory=True, prefetch_factor=4,
+        # )
         dataloader = torch.utils.data.DataLoader(
-            dataset, batch_size=config['batch'], shuffle=shuffle, num_workers=16, pin_memory=True, prefetch_factor=4,
+            dataset, batch_size=config['batch'], shuffle=shuffle, num_workers=2, pin_memory=True, prefetch_factor=4,
         )
     return dataloader, dataset
 
@@ -106,18 +112,23 @@ def get_data_package():
         train_dataset.append(dataset)
     train_dataset_total = torch.utils.data.ConcatDataset(train_dataset)
 
+    # train_dataloader = torch.utils.data.DataLoader(
+    #     train_dataset_total, batch_size=config['batch'], shuffle=True, num_workers=16, pin_memory=True, prefetch_factor=4, 
+    # )
     train_dataloader = torch.utils.data.DataLoader(
-        train_dataset_total, batch_size=config['batch'], shuffle=True, num_workers=16, pin_memory=True, prefetch_factor=4, 
+        train_dataset_total, batch_size=config['batch'], shuffle=True, num_workers=2, pin_memory=True, prefetch_factor=4, 
     )
-
     validation_dataset = []
     for dataset_root in config['validation_dataset'].split(','):
         _ , dataset = get_dataloader(dataset_root,shuffle=True)
         validation_dataset.append(dataset)
     validation_dataset_total = torch.utils.data.ConcatDataset(validation_dataset)
 
+    # validation_dataloader = torch.utils.data.DataLoader(
+    #     validation_dataset_total, batch_size=config['batch'], shuffle=False, num_workers=16, pin_memory=True, prefetch_factor=4, 
+    # )
     validation_dataloader = torch.utils.data.DataLoader(
-        validation_dataset_total, batch_size=config['batch'], shuffle=False, num_workers=16, pin_memory=True, prefetch_factor=4, 
+        validation_dataset_total, batch_size=config['batch'], shuffle=False, num_workers=2, pin_memory=True, prefetch_factor=4, 
     )
     return train_dataloader, validation_dataloader
 

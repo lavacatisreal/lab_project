@@ -5,6 +5,7 @@ from torch.utils.tensorboard import SummaryWriter
 import datetime
 from util import converter, tensor2str
 from config import config
+import os
 
 class Trainer:
     def __init__(self, model, optimizer, scheduler, criterion, criterion_dis,
@@ -54,8 +55,18 @@ class Trainer:
     def validation(self, epoch=-1, tag=''):
         torch.cuda.empty_cache()
         self.validation_time += 1
-        torch.save(self.model.state_dict(), f'./history/{self.exp_name}/model.pth')
-        result_file = open(f'./history/{self.exp_name}/result_file_validation_{self.validation_time}.txt', 'w+', encoding='utf-8')
+        # 將原本相對路徑改用絕對路徑
+        save_dir = os.path.join('/content/lab_project/history', self.exp_name)
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir, exist_ok=True)
+
+        # 儲存模型使用絕對路徑
+        torch.save(self.model.state_dict(), os.path.join(save_dir, 'model.pth'))
+
+        result_file_path = os.path.join(save_dir, f'result_file_validation_{self.validation_time}.txt')
+        result_file = open(result_file_path, 'w+', encoding='utf-8')
+        # torch.save(self.model.state_dict(), f'./history/{self.exp_name}/model.pth')
+        # result_file = open(f'./history/{self.exp_name}/result_file_validation_{self.validation_time}.txt', 'w+', encoding='utf-8')
 
         print(f'\033[33m[info] Start to validate ! \033[0m')
         self.model.eval()
@@ -129,8 +140,14 @@ class Trainer:
 
         if correct/total > self.best_acc:
             self.best_acc = correct / total
-            torch.save(self.model.state_dict(), './history/{}/best_model.pth'.format(config['exp_name']))
+            # torch.save(self.model.state_dict(), './history/{}/best_model.pth'.format(config['exp_name']))
+            best_model_path = os.path.join('/content/lab_project/history', self.exp_name, 'best_model.pth')
+            torch.save(self.model.state_dict(), best_model_path)
 
-        f = open('./history/{}/record.txt'.format(config['exp_name']),'a+',encoding='utf-8')
-        f.write("Epoch : {} | ACC : {}\n".format(epoch, correct/total))
+        record_path = os.path.join('/content/lab_project/history', self.exp_name, 'record.txt')
+        with open(record_path, 'a+', encoding='utf-8') as f:
+            f.write(f"Epoch : {epoch} | ACC : {correct/total}\n")
+
+        # f = open('./history/{}/record.txt'.format(config['exp_name']),'a+',encoding='utf-8')
+        # f.write("Epoch : {} | ACC : {}\n".format(epoch, correct/total))
         f.close()
