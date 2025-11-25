@@ -16,8 +16,8 @@ config = {
     'encoder' : 'resnet',
     'decoder' : 'transformer',
     'alpha_path' : '/content/lab_project/data/decompose_v1.txt', #常見字?
-    'radical_path': '/content/lab_project/data/all_bpmf.txt', #常見部首?
-    'decompose_path': '/content/lab_project/data/bpmf_ids_v2.txt',   #文字檔ids?
+    'radical_path': '/content/lab_project/data/all_bpmf.txt', #所有unicode字符?
+    'decompose_path': '/content/lab_project/data/bpmf_ids_v2.txt',   #ids?
     'pre-train_model': '/content/drive/MyDrive/improve_FudanOCR/pre_train_model/adult_pre_train_model.pth',
     'stn': False,
     'constrain': False,
