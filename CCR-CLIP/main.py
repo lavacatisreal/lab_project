@@ -37,7 +37,7 @@ def convert_models_to_fp32(model):
         p.data = p.data.float()
         p.grad.data = p.grad.data.float()
 
-char_file = open('./data/char_5018.txt', 'r').read()
+char_file = open('/content/lab_project/CCR-CLIP/data/char_5018.txt', 'r').read()
 char_5018 = list(char_file)
 
 global best_acc
