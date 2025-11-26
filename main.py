@@ -44,12 +44,33 @@ def main():
         alphabet=alphabet,
         exp_name=config['exp_name']
     )
+    #---
+    resume_path = "/content/drive/MyDrive/improve_FudanOCR/checkpoints/model_last.pth"
+    start_epoch = 1
+    if os.path.exists(resume_path):
+        print(f"Loading checkpoint from {resume_path}")
+        checkpoint = torch.load(resume_path, map_location="cuda")
+        model.load_state_dict(checkpoint["model"])
+        optimizer.load_state_dict(checkpoint["optimizer"])
+        scheduler.load_state_dict(checkpoint["scheduler"])
+        trainer.step = checkpoint.get("step", 0)
+        start_epoch = checkpoint.get("epoch", 0) + 1
+        print(f"Resuming from epoch {start_epoch}, step {trainer.step}")
+    else:
+        print("No checkpoint found, start at epoch 1")
+    for epoch in range(start_epoch, config["epoch"] + 1):
+        for iteration, data in enumerate(train_loader):
+            # 你的訓練步驟
+            trainer.train_one_step(epoch, iteration + 1, ...)
+        trainer.validation(epoch)
+        scheduler.step()
+    #---
+
     if not config['test']:
         
         print(f"\033[33m[info] ------------------------- Mode: train and validation! -------------------------\033[0m")
         
         # train and validation
-        # ----------
         save_dir = os.path.join('/content/lab_project/history', config['exp_name'])
         if not os.path.exists(save_dir):
             os.makedirs(save_dir, exist_ok=True)

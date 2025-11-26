@@ -55,13 +55,28 @@ class Trainer:
     def validation(self, epoch=-1, tag=''):
         torch.cuda.empty_cache()
         self.validation_time += 1
-        # 將原本相對路徑改用絕對路徑
-        save_dir = os.path.join('/content/lab_project/history', self.exp_name)
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir, exist_ok=True)
+        # -----
+        # 儲存 checkpoint，確保目錄存在
+        save_dir = os.path.join('/content/drive/MyDrive/improve_FudanOCR/checkpoints', self.exp_name)
+        os.makedirs(save_dir, exist_ok=True)
+        ckpt_path = os.path.join(save_dir, 'model_last.pth')
 
-        # 儲存模型使用絕對路徑
-        torch.save(self.model.state_dict(), os.path.join(save_dir, 'model.pth'))
+        torch.save({
+            "epoch": epoch,
+            "model": self.model.state_dict(),
+            "optimizer": self.optimizer.state_dict(),
+            "scheduler": self.scheduler.state_dict(),
+            "step": self.step,
+        }, ckpt_path)
+
+        print(f"Checkpoint saved at {ckpt_path}")
+        # -----
+        # save_dir = os.path.join('/content/lab_project/history', self.exp_name)
+        # if not os.path.exists(save_dir):
+        #     os.makedirs(save_dir, exist_ok=True)
+
+        # # 儲存模型使用絕對路徑
+        # torch.save(self.model.state_dict(), os.path.join(save_dir, 'model.pth'))
 
         result_file_path = os.path.join(save_dir, f'result_file_validation_{self.validation_time}.txt')
         result_file = open(result_file_path, 'w+', encoding='utf-8')
